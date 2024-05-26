@@ -1,14 +1,20 @@
 import pygame
 import sys
 
+from settings import Settings
+from grid import Grid
+
 
 class TicTacToe:
     def __init__(self):
         """ initialize the game, and create its resources. """
         pygame.init()
+        self.settings = Settings()
         # Create the game screen into the display.
-        self.screen = pygame.display.set_mode((1200, 700))
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Tic Tac Toe")
+
+        self.grid = Grid(self)
 
     def run_game(self):
         """ The main loop of the game."""
@@ -23,7 +29,9 @@ class TicTacToe:
                 sys.exit()
 
     def _update_screen(self):
-        self.screen.fill((250, 250, 250))
+        self.screen.fill(self.settings.bg_color)
+
+        self.grid.blitme()
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
