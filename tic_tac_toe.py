@@ -3,6 +3,7 @@ import sys
 
 from settings import Settings
 from grid import Grid
+from X_icon import X
 
 
 class TicTacToe:
@@ -15,6 +16,7 @@ class TicTacToe:
         pygame.display.set_caption("Tic Tac Toe")
 
         self.grid = Grid(self)
+        self.x_icon = X(self)
 
     def run_game(self):
         """ The main loop of the game."""
@@ -32,6 +34,7 @@ class TicTacToe:
         self.screen.fill(self.settings.bg_color)
 
         self.grid.blitme()
+        self.x_icon.blitme()
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
