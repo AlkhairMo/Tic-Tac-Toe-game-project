@@ -14,7 +14,6 @@ class X:
         self.image = pygame.image.load("images/X.png")
         self.image = pygame.transform.scale(self.image, (180, 180))
         self.rect = self.image.get_rect()
-        self.rect.center = self.grid_rect.center
 
     def blitme(self):
         """ Draw x icon in the screen"""
