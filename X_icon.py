@@ -8,7 +8,6 @@ class X:
         """ Initialize the x icon. """
         self.grid = Grid(ttt_game)
         self.screen = ttt_game.screen
-        self.settings = ttt_game.settings
         self.grid_rect = self.grid.rect
 
         self.image = pygame.image.load("images/X.png")

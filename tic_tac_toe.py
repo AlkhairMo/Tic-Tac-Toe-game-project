@@ -1,7 +1,6 @@
 import pygame
 import sys
 
-from settings import Settings
 from grid import Grid
 from X_icon import X
 from O_icon import O
@@ -11,11 +10,13 @@ class TicTacToe:
     def __init__(self):
         """ initialize the game, and create its resources. """
         pygame.init()
-        self.settings = Settings()
         # Create the game screen into the display.
-        self.screen = pygame.display.set_mode((self.settings.screen_width,
-                                               self.settings.screen_height))
+        self.screen = pygame.display.set_mode((700, 800))
         pygame.display.set_caption("Tic Tac Toe")
+
+        # Background colors
+        self.bg_colors = [(56, 205, 255), (255, 102, 102)]
+        self.bg_color = self.bg_colors[1]
 
         # Icons
         self.grid = Grid(self)
@@ -66,7 +67,7 @@ class TicTacToe:
                     turn_color = 1
                 else:
                     turn_color = 0
-                self.settings.bg_color = self.settings.bg_colors[turn_color]
+                self.bg_color = self.bg_colors[turn_color]
 
     def draw_icons(self):
         """ Draw X and O in position player want. """
@@ -89,38 +90,38 @@ class TicTacToe:
         for x in self.marker:
             # check columns
             if sum(x) == 3:
-                self._player_X_win()
+                self._player_x_win()
             if sum(x) == -3:
-                self._player_O_win()
+                self._player_o_win()
             # check rows
             if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == 3:
-                self._player_X_win()
+                self._player_x_win()
             if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == -3:
-                self._player_O_win()
+                self._player_o_win()
             y_pos += 1
         # check crosses
         if (self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == 3
                 or self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == 3):
-            self._player_X_win()
+            self._player_x_win()
         if (self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == -3
                 or self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == -3):
-            self._player_O_win()
+            self._player_o_win()
 
-    def _player_X_win(self):
+    def _player_x_win(self):
         """ Set player X winning actions. """
         self.winner = 1
         self.game_playing = False
-        self.settings.bg_color = self.settings.bg_colors[1]
+        self.bg_color = self.bg_colors[1]
 
-    def _player_O_win(self):
+    def _player_o_win(self):
         """ Set player O winning actions. """
         self.winner = -1
         self.game_playing = False
-        self.settings.bg_color = self.settings.bg_colors[0]
+        self.bg_color = self.bg_colors[0]
 
     def _update_screen(self):
         """ Update images on the screen and flip to new screen. """
-        self.screen.fill(self.settings.bg_color)
+        self.screen.fill(self.bg_color)
 
         self.grid.blitme()
 
