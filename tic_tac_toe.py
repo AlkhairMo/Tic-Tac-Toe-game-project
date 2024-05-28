@@ -30,7 +30,11 @@ class TicTacToe:
         # Player row 1 for X, -1 for O
         self.player = 1
 
-        self.show_x = False
+        # Winner variable
+        self.winner = 0
+
+        # Game playing flag
+        self.game_playing = True
 
     def run_game(self):
         """ The main loop of the game."""
@@ -43,11 +47,12 @@ class TicTacToe:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
-                x_pos = mouse_pos[0]
-                y_pos = mouse_pos[1]
-                self._switch_turn(x_pos, y_pos)
+            elif self.game_playing:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    x_pos = mouse_pos[0]
+                    y_pos = mouse_pos[1]
+                    self._switch_turn(x_pos, y_pos)
 
     def _switch_turn(self, x_pos, y_pos):
         """ Switch players each time a player play. """
@@ -69,13 +74,46 @@ class TicTacToe:
             y_pos = 0
             for y in x:
                 if y == 1:
-                    self.x_icon.rect = (((x_pos * 200) + 60), ((y_pos * 200) + 155))
+                    self.x_icon.rect = (((x_pos * 200) + 65), ((y_pos * 200) + 160))
                     self.x_icon.blitme()
                 if y == -1:
-                    self.O_icon.rect = (((x_pos * 200) + 60), ((y_pos * 200) + 155))
+                    self.O_icon.rect = (((x_pos * 200) + 65), ((y_pos * 200) + 160))
                     self.O_icon.blitme()
                 y_pos += 1
             x_pos += 1
+            self._check_winner()
+
+    def _check_winner(self):
+        y_pos = 0
+        for x in self.marker:
+            # check columns
+            if sum(x) == 3:
+                self.winner = 1
+                self.game_playing = False
+                self.settings.bg_color = self.settings.bg_colors[1]
+            if sum(x) == -3:
+                self.winner = -1
+                self.game_playing = False
+                self.settings.bg_color = self.settings.bg_colors[0]
+            # check rows
+            if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == 3:
+                self.winner = 1
+                self.game_playing = False
+                self.settings.bg_color = self.settings.bg_colors[1]
+            if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == -3:
+                self.winner = -1
+                self.game_playing = False
+                self.settings.bg_color = self.settings.bg_colors[0]
+            y_pos += 1
+        # check crosses
+        if self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == 3 or self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == 3:
+            self.winner = 1
+            self.game_playing = False
+            self.settings.bg_color = self.settings.bg_colors[1]
+        if self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == -3 or self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == -3:
+            self.winner = -1
+            self.game_playing = False
+            self.settings.bg_color = self.settings.bg_colors[0]
 
     def _update_screen(self):
         """ Update images on the screen and flip to new screen. """

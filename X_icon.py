@@ -12,7 +12,7 @@ class X:
         self.grid_rect = self.grid.rect
 
         self.image = pygame.image.load("images/X.png")
-        self.image = pygame.transform.scale(self.image, (180, 180))
+        self.image = pygame.transform.scale(self.image, (170, 170))
         self.rect = self.image.get_rect()
 
     def blitme(self):
