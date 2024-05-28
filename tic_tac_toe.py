@@ -4,6 +4,7 @@ import sys
 from grid import Grid
 from X_icon import X
 from O_icon import O
+from board import Board
 
 
 class TicTacToe:
@@ -15,13 +16,17 @@ class TicTacToe:
         pygame.display.set_caption("Tic Tac Toe")
 
         # Background colors
-        self.bg_colors = [(56, 205, 255), (255, 102, 102)]
+        self.bg_colors = [(56, 205, 255), (255, 102, 102), (102, 255, 102)]
         self.bg_color = self.bg_colors[1]
+
+        # line color
+        self.line_color = (26, 26, 26)
 
         # Icons
         self.grid = Grid(self)
         self.x_icon = X(self)
         self.O_icon = O(self)
+        self.winner_board = Board(self, "We have a winner!", "Play again")
 
         # Manage marker position
         self.marker = []
@@ -91,13 +96,19 @@ class TicTacToe:
             # check columns
             if sum(x) == 3:
                 self._player_x_win()
+                pygame.draw.line(self.screen, self.line_color,
+                                 (150, 170), (150, 730), 6)
             if sum(x) == -3:
                 self._player_o_win()
             # check rows
             if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == 3:
                 self._player_x_win()
+                pygame.draw.line(self.screen, self.line_color,
+                                 (70, y_pos * 200 + 250), (630, y_pos * 200 + 250), 6)
             if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == -3:
                 self._player_o_win()
+                pygame.draw.line(self.screen, self.line_color,
+                                 (70, y_pos * 200 + 250), (630, y_pos * 200 + 250), 6)
             y_pos += 1
         # check crosses
         if (self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == 3
@@ -126,6 +137,9 @@ class TicTacToe:
         self.grid.blitme()
 
         self.draw_icons()
+
+        if not self.game_playing:
+            self.winner_board.blitme()
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
