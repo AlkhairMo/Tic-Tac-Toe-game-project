@@ -17,7 +17,6 @@ class TicTacToe:
 
         # Background colors
         self.bg_colors = [(56, 205, 255), (255, 102, 102), (102, 255, 102)]
-        self.bg_color = self.bg_colors[1]
 
         # line color
         self.line_color = (26, 26, 26)
@@ -29,23 +28,7 @@ class TicTacToe:
         self.winner_board = Board(self, "We have a winner!", "Play again")
         self.draw_board = Board(self, "It is draw", "Play again")
 
-        # Manage marker position
-        self.marker = []
-        for x in range(3):
-            row = [0] * 3
-            self.marker.append(row)
-
-        self.fulled_markers = []
-        self.draw = False
-
-        # Player turn 1 for X, -1 for O
-        self.player = 1
-
-        # Winner variable
-        self.winner = 0
-
-        # Game playing flag
-        self.game_playing = True
+        self._prep_game()
 
     def run_game(self):
         """ The main loop of the game."""
@@ -84,17 +67,30 @@ class TicTacToe:
         """ Make play again button work. """
         if not self.game_playing and (self.winner_board.play_again_image_rect.collidepoint(mouse_pos)
                                       or self.draw_board.play_again_image_rect.collidepoint(mouse_pos)):
-            self.marker = []
-            for x in range(3):
-                row = [0] * 3
-                self.marker.append(row)
+            self._prep_game()
 
-            self.fulled_markers = []
-            self.draw = False
-            self.player = 1
-            self.bg_color = self.bg_colors[1]
-            self.winner = 0
-            self.game_playing = True
+    def _prep_game(self):
+        """ Prepare and est game settings for new game. """
+        # Manage marker position
+        self.marker = []
+        for x in range(3):
+            row = [0] * 3
+            self.marker.append(row)
+
+        # check draw list and flag.
+        self.fulled_markers = []
+        self.draw = False
+
+        # Player turn 1 for X, -1 for O
+        self.player = 1
+        self.bg_color = self.bg_colors[1]
+
+        # Winner variable
+        self.winner = 0
+        self.player_win = False
+
+        # Game playing flag
+        self.game_playing = True
 
     def draw_icons(self):
         """ Draw X and O in position player want. """
@@ -154,12 +150,14 @@ class TicTacToe:
         self.winner = 1
         self.game_playing = False
         self.bg_color = self.bg_colors[1]
+        self.player_win = True
 
     def _player_o_win(self):
         """ Set player O winning actions. """
         self.winner = -1
         self.game_playing = False
         self.bg_color = self.bg_colors[0]
+        self.player_win = True
 
     def _check_draw(self):
         """ Checking the grid is full and no one has win. """
@@ -179,9 +177,9 @@ class TicTacToe:
 
         self.draw_icons()
 
-        if not self.game_playing and not self.draw:
+        if not self.game_playing and self.player_win:
             self.winner_board.blitme()
-        if not self.game_playing and self.draw:
+        if not self.game_playing and not self.player_win and self.draw:
             self.draw_board.blitme()
             self.bg_color = self.bg_colors[2]
 
