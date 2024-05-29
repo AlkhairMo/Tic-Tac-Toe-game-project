@@ -58,12 +58,12 @@ class TicTacToe:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            elif self.game_playing:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_pos = pygame.mouse.get_pos()
-                    x_pos = mouse_pos[0]
-                    y_pos = mouse_pos[1]
-                    self._switch_turn(x_pos, y_pos)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                x_pos = mouse_pos[0]
+                y_pos = mouse_pos[1]
+                self._switch_turn(x_pos, y_pos)
+                self._play_again_button(mouse_pos)
 
     def _switch_turn(self, x_pos, y_pos):
         """ Switch players each time a player play. """
@@ -78,6 +78,22 @@ class TicTacToe:
                     turn_color = 0
                 self.bg_color = self.bg_colors[turn_color]
         self._check_draw()
+
+    def _play_again_button(self, mouse_pos):
+        """ Make play again button work. """
+        if not self.game_playing and (self.winner_board.play_again_image_rect.collidepoint(mouse_pos)
+                                      or self.draw_board.play_again_image_rect.collidepoint(mouse_pos)):
+            self.marker = []
+            for x in range(3):
+                row = [0] * 3
+                self.marker.append(row)
+
+            self.fulled_markers = []
+            self.draw = False
+            self.player = 1
+            self.bg_color = self.bg_colors[1]
+            self.winner = 0
+            self.game_playing = True
 
     def draw_icons(self):
         """ Draw X and O in position player want. """
@@ -161,8 +177,6 @@ class TicTacToe:
         self.grid.blitme()
 
         self.draw_icons()
-
-        print(self.fulled_markers)
 
         if not self.game_playing and not self.draw:
             self.winner_board.blitme()
