@@ -27,6 +27,7 @@ class TicTacToe:
         self.x_icon = X(self)
         self.O_icon = O(self)
         self.winner_board = Board(self, "We have a winner!", "Play again")
+        self.draw_board = Board(self, "It is draw", "Play again")
 
         # Manage marker position
         self.marker = []
@@ -35,7 +36,7 @@ class TicTacToe:
             self.marker.append(row)
 
         self.fulled_markers = []
-        self.drew = False
+        self.draw = False
 
         # Player turn 1 for X, -1 for O
         self.player = 1
@@ -76,7 +77,7 @@ class TicTacToe:
                 else:
                     turn_color = 0
                 self.bg_color = self.bg_colors[turn_color]
-        self._check_drew()
+        self._check_draw()
 
     def draw_icons(self):
         """ Draw X and O in position player want. """
@@ -143,14 +144,14 @@ class TicTacToe:
         self.game_playing = False
         self.bg_color = self.bg_colors[0]
 
-    def _check_drew(self):
+    def _check_draw(self):
         """ Checking the grid is full and no one has win. """
         for row in self.marker:
             for element in row:
                 if element != 0:
                     self.fulled_markers.append(element)
                 if len(self.fulled_markers) == 45:
-                    self.drew = True
+                    self.draw = True
                     self.game_playing = False
 
     def _update_screen(self):
@@ -163,8 +164,11 @@ class TicTacToe:
 
         print(self.fulled_markers)
 
-        if not self.game_playing:
+        if not self.game_playing and not self.draw:
             self.winner_board.blitme()
+        if not self.game_playing and self.draw:
+            self.draw_board.blitme()
+            self.bg_color = self.bg_colors[2]
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
