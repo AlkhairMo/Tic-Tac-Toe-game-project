@@ -62,7 +62,8 @@ class TicTacToe:
                 mouse_pos = pygame.mouse.get_pos()
                 x_pos = mouse_pos[0]
                 y_pos = mouse_pos[1]
-                self._switch_turn(x_pos, y_pos)
+                if self.game_playing:
+                    self._switch_turn(x_pos, y_pos)
                 self._play_again_button(mouse_pos)
 
     def _switch_turn(self, x_pos, y_pos):
