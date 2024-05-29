@@ -34,6 +34,9 @@ class TicTacToe:
             row = [0] * 3
             self.marker.append(row)
 
+        self.fulled_markers = []
+        self.drew = False
+
         # Player turn 1 for X, -1 for O
         self.player = 1
 
@@ -73,6 +76,7 @@ class TicTacToe:
                 else:
                     turn_color = 0
                 self.bg_color = self.bg_colors[turn_color]
+        self._check_drew()
 
     def draw_icons(self):
         """ Draw X and O in position player want. """
@@ -91,15 +95,18 @@ class TicTacToe:
             self._check_winner()
 
     def _check_winner(self):
+        """ Checking one of the player had win. """
         y_pos = 0
         for x in self.marker:
             # check columns
             if sum(x) == 3:
                 self._player_x_win()
                 pygame.draw.line(self.screen, self.line_color,
-                                 (150, 170), (150, 730), 6)
+                                 (150 + y_pos * 200, 170), (150 + y_pos * 200, 730), 6)
             if sum(x) == -3:
                 self._player_o_win()
+                pygame.draw.line(self.screen, self.line_color,
+                                 (150 + y_pos * 200, 170), (150 + y_pos * 200, 730), 6)
             # check rows
             if self.marker[0][y_pos] + self.marker[1][y_pos] + self.marker[2][y_pos] == 3:
                 self._player_x_win()
@@ -111,12 +118,18 @@ class TicTacToe:
                                  (70, y_pos * 200 + 250), (630, y_pos * 200 + 250), 6)
             y_pos += 1
         # check crosses
-        if (self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == 3
-                or self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == 3):
+        if self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == 3:
             self._player_x_win()
-        if (self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == -3
-                or self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == -3):
+            pygame.draw.line(self.screen, self.line_color, (100, 200), (600, 700), 6)
+        if self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == 3:
+            self._player_x_win()
+            pygame.draw.line(self.screen, self.line_color, (570, 220), (120, 680), 6)
+        if self.marker[0][0] + self.marker[1][1] + self.marker[2][2] == -3:
             self._player_o_win()
+            pygame.draw.line(self.screen, self.line_color, (100, 200), (600, 700), 6)
+        if self.marker[0][2] + self.marker[1][1] + self.marker[2][0] == -3:
+            self._player_o_win()
+            pygame.draw.line(self.screen, self.line_color, (570, 220), (120, 680), 6)
 
     def _player_x_win(self):
         """ Set player X winning actions. """
@@ -130,6 +143,16 @@ class TicTacToe:
         self.game_playing = False
         self.bg_color = self.bg_colors[0]
 
+    def _check_drew(self):
+        """ Checking the grid is full and no one has win. """
+        for row in self.marker:
+            for element in row:
+                if element != 0:
+                    self.fulled_markers.append(element)
+                if len(self.fulled_markers) == 45:
+                    self.drew = True
+                    self.game_playing = False
+
     def _update_screen(self):
         """ Update images on the screen and flip to new screen. """
         self.screen.fill(self.bg_color)
@@ -137,6 +160,8 @@ class TicTacToe:
         self.grid.blitme()
 
         self.draw_icons()
+
+        print(self.fulled_markers)
 
         if not self.game_playing:
             self.winner_board.blitme()
