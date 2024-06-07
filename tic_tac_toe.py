@@ -61,7 +61,7 @@ class TicTacToe:
                 else:
                     turn_color = 0
                 self.bg_color = self.bg_colors[turn_color]
-        self._check_draw()
+                self._check_draw()
 
     def _play_again_button(self, mouse_pos):
         """ Make play again button work. """
